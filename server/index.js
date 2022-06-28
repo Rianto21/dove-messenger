@@ -6,7 +6,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 //local Modules
-import postroutes from './routes/posts.js'
+import postroutes from './routes/post.js'
+import userroutes from './routes/users.js'
+
 
 const app = express();
 const router = express.Router();
@@ -23,12 +25,14 @@ const rootroutes = router.get('/', (req, res) => {
 
 app.use('/', rootroutes)
 app.use('/posts', postroutes)
+app.use('/user', userroutes)
 
 const PORT = process.env.PORT || 8000;
 
 mongoose.connect(process.env.CONN_STRING, {useNewUrlParser: true, useunifiedTopology: true})
   .then(() => app.listen(PORT, console.log(`DB Connected Running in ${PORT}`)))
   .catch((error) => console.log(error.message));
+
 
 // mongoose.set('useFindAndModify', false); 
 
