@@ -16,8 +16,10 @@ const encrypt = {
 export const RegisterUser = async (req, res, next) => {
   try {
     const {username, email, phone_number, password, full_name} = req.body
+    // console.log(req.body)  
 
-    const enPassword = encrypt.comparePassword(password)
+    const enPassword = await encrypt.cryptPassword(password)
+    // console.log(enPassword)
 
     const user = new UserSchema({
       username: username,
@@ -32,7 +34,7 @@ export const RegisterUser = async (req, res, next) => {
       super_dove: 5,
       created_at: new Date
     })
-    await user.save();
+    user.save();
 
     res.json({
       status: true,

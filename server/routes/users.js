@@ -5,6 +5,6 @@ import * as uc from '../controllers/users-controllers.js';
 
 router.get('/')
 router.put('/')
-router.post('/', uc.RefreshDoveUser)
+router.post('/', uc.RegisterUser)
 
 export default router
