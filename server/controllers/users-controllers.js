@@ -1,5 +1,8 @@
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+dotenv.config()
 
 import { UserSchema } from '../models/users.js';
 import { UserValidationSchema } from '../models/user_validation.js';
@@ -45,17 +48,36 @@ export const RegisterUser = async (req, res, next) => {
       });
 
       await UserValidationSchema.createIndexes({ "createdAt": 1 }, { expireAfterSeconds: 300 })
-      await UserValidationSchema.create({
+      const uservalidationscheme = await UserValidationSchema.create({
         'created_at': new Date,
         'user_id': user._id, 
         'user_email': email,
         'validation_number': random
       })
 
+      let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+          user: process.env.MAILER_EMAIL, // generated ethereal user
+          pass: process.env.MAILER_PASSWORD // generated ethereal password
+        },
+      });
+
+      // send mail with defined transport object
+      let info = await transporter.sendMail({
+        from: process.env.MAILER_EMAIL, // sender address
+        to: user.email, // list of receivers
+        subject: "VERIFICATION Dove Messenger <No Reply>", // Subject line
+        text: `Here is your verification number: ${random}`, // plain text body
+        html: `<b>${random} is your verification number</b>`, // html body
+      });      
       response = {
         status: true,
         message: "OK",
-        data: user
+        data: user,
+        email_response: info.response
       }
     }else{
       response = {
