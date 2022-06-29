@@ -26,10 +26,12 @@ const userSchema = mongoose.Schema({
     type: String
   },
   'dove': {
-    type: Number
+    type: Number,
+    default: 20
   },
   'super_dove': {
-    type: Number
+    type: Number,
+    default: 5
   },
   'created_time': {
     type: Number
