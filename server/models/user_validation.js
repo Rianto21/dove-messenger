@@ -10,9 +10,12 @@ const userValidationSchema = mongoose.Schema({
   validation_number: {
     type: Number
   },
-  created_at: {
-    type: Date
+  createdAt: {
+    type: Date,
+    default: Date.now,
   }
-}, {collection: 'user_validation'})
+}, {collection: 'user_validation'} ) 
+
+userValidationSchema.index({createdAt: 1},{expireAfterSeconds: 300})
 
 export const UserValidationSchema = mongoose.model('userValidationSchema', userValidationSchema)

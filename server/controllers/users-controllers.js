@@ -18,9 +18,40 @@ const encrypt = {
     .then(resp => resp)
 }
 
+export const getAllUser = async (req, res, next) => {
+  try {
+    const alluser = await UserSchema.find({})
+    res.json({
+      status: true,
+      message: "OK",
+      data: alluser
+    })
+  } catch (error) {
+    res.json({
+      status: false,
+      message: error
+    })
+  }
+}
+
+export const getUserById = async (req, res, next) => {
+  try {
+    const user = await UserSchema.find({_id: req.body._id})
+    res.json({
+      status: true,
+      message: "OK",
+      data: user
+    })
+  } catch (error) {
+    res.json({
+      status: false,
+      message: error
+    })
+  }
+}
 
 export const RegisterUser = async (req, res, next) => {
-  try {
+  try{
     const {username, email, phone_number, password, full_name} = req.body
     // console.log(req.body)  
 
@@ -41,15 +72,9 @@ export const RegisterUser = async (req, res, next) => {
         created_at: new Date
       })
       user.save();
-      let random
-      crypto.randomInt(0, 1000000, (err, n) => {
-        if (err) throw err;
-        random = n
-      });
-
-      await UserValidationSchema.createIndexes({ "createdAt": 1 }, { expireAfterSeconds: 300 })
+      let random = Math.floor(100000 + Math.random() * 900000)
+      // console.log(random)
       const uservalidationscheme = await UserValidationSchema.create({
-        'created_at': new Date,
         'user_id': user._id, 
         'user_email': email,
         'validation_number': random
@@ -130,11 +155,11 @@ export const LoginUser = async (req, res, next) => {
 
 export const VerifyUser = async (req, res, next) => {
   try {
-    const {user_id, verification_Number} = req.body
-    const validation_check = await UserValidationSchema.find({user_id: user_id, validation_number: verification_Number})
+    const {user_id, verification_number} = req.body
+    const validation_check = await UserValidationSchema.find({user_id: user_id, validation_number: verification_number})
     let response;
     if(validation_check.length > 0){
-      await UserSchema.updateOne({user_id: user_id}, {
+      await UserSchema.updateOne({_id: user_id}, {
         $set: {
           'is_verified': true
         }
@@ -150,6 +175,47 @@ export const VerifyUser = async (req, res, next) => {
       }
     }
     res.json(response)
+  } catch (error) {
+    res.json({
+      status: false,
+      message: error
+    })
+  }
+}
+
+export const requestValidation = async (req, res, next) => {
+  try {
+    const {user_id, user_email} = req.body
+    let random = Math.floor(100000 + Math.random() * 900000)
+    const uservalidationscheme = await UserValidationSchema.create({
+      'user_id': user_id, 
+      'user_email': email,
+      'validation_number': random
+    })
+
+    //EMAIL SENDER
+    let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // true for 465, false for other ports
+      auth: {
+        user: process.env.MAILER_EMAIL, // generated ethereal user
+        pass: process.env.MAILER_PASSWORD // generated ethereal password
+      },
+    });
+    let info = await transporter.sendMail({
+      from: process.env.MAILER_EMAIL, // sender address
+      to: user.email, // list of receivers
+      subject: "VERIFICATION Dove Messenger <No Reply>", // Subject line
+      text: `Here is your verification number: ${random}`, // plain text body
+      html: `<b>${random} is your verification number</b>`, // html body
+    });   
+
+    res.json({
+      status: true,
+      message: "OK",
+      email_response: info.response
+    })
   } catch (error) {
     res.json({
       status: false,
