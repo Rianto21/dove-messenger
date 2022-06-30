@@ -8,6 +8,7 @@ dotenv.config();
 //local Modules
 import postroutes from './routes/post.js'
 import userroutes from './routes/users.js'
+import messageroutes from './routes/message.js'
 
 
 const app = express();
@@ -26,6 +27,7 @@ const rootroutes = router.get('/', (req, res) => {
 app.use('/', rootroutes)
 app.use('/posts', postroutes)
 app.use('/user', userroutes)
+app.use('/message', messageroutes)
 
 const PORT = process.env.PORT || 8000;
 

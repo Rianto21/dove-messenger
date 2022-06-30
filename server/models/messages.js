@@ -1,22 +1,22 @@
 import mongoose from "mongoose";
 
 const messageSchema = mongoose.Schema({
-  'message-body': {
+  'message_body': {
     type: String
   },
-  'sender-id': {
+  'sender_id': {
     type: mongoose.Schema.Types.ObjectId
   },
-  'receiver-id': {
+  'receiver_id': {
     type: mongoose.Schema.Types.ObjectId
   },
-  'dove-departure': {
+  'dove_departure': {
     type: Date
   },
   'booster': {
     type: Boolean
   },
-  'dove-arrived': {
+  'dove_arrived': {
     type: Date
   }
 }, {collection: 'messages'})
