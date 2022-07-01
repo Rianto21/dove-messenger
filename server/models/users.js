@@ -25,6 +25,9 @@ const userSchema = mongoose.Schema({
   'full_name': {
     type: String
   },
+  friend_list: {
+    type: [Object]
+  },
   'dove': {
     type: Number,
     default: 20

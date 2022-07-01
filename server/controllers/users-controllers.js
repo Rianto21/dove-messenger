@@ -265,3 +265,27 @@ export const RefreshDoveUser = async (req, res, next) => {
     })
   }
 }
+
+export const addFriend = async (req, res, next) => {
+  try {
+    const {user_id, friend_email, friend_name} = req.body
+    const add = await UserSchema.updateOne({_id: user_id}, {
+      $push: {
+        "friend_list": {
+          'friend_email': friend_email,
+          'friend_name': friend_name,
+        }
+      }
+    })
+    res.json({
+      status: true,
+      message: "OK",
+      data: add
+    })
+  } catch (error) {
+    res.json({
+      status: false,
+      message: "OK"
+    })
+  }
+}
