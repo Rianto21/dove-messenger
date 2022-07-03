@@ -25,6 +25,9 @@ const userSchema = mongoose.Schema({
   'full_name': {
     type: String
   },
+  'profile_picture': {
+    type: String
+  },
   friend_list: {
     type: [Object]
   },

@@ -4,10 +4,10 @@ const messageSchema = mongoose.Schema({
   'message_body': {
     type: String
   },
-  'sender_id': {
+  'conversation_id': {
     type: mongoose.Schema.Types.ObjectId
   },
-  'receiver_id': {
+  'sender_id': {
     type: mongoose.Schema.Types.ObjectId
   },
   'dove_departure': {
